@@ -5,7 +5,7 @@ import { AlbumInfos } from "../interfaces/album-infos.interface";
 
 interface AlbumCardProps {
   albumInfos: AlbumInfos;
-  updateItem: (itemUpdated: AlbumInfos) => void;
+  updateItem?: (itemUpdated: AlbumInfos) => void;
 }
 
 export const Album = (props: AlbumCardProps): JSX.Element => {
@@ -14,7 +14,9 @@ export const Album = (props: AlbumCardProps): JSX.Element => {
   const updateTitle = (newTitle: string) => {
     const itemUpdated = { ...props.albumInfos };
     itemUpdated.title = newTitle;
-    props.updateItem(itemUpdated);
+    if (props.updateItem) {
+      props.updateItem(itemUpdated);
+    }
   };
 
   return (
@@ -66,11 +68,13 @@ export const Album = (props: AlbumCardProps): JSX.Element => {
           animate={{ y: isHovered ? -5 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          <TitleComponent
-            id={props.albumInfos.id}
-            title={props.albumInfos.title}
-            setValue={updateTitle}
-          />
+          {props.updateItem && props.albumInfos.id && (
+            <TitleComponent
+              id={props.albumInfos.id}
+              title={props.albumInfos.title}
+              setValue={updateTitle}
+            />
+          )}
         </motion.h3>
       </div>
     </motion.div>

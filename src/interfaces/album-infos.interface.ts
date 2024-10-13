@@ -1,6 +1,6 @@
 export interface AlbumInfos {
-  id: number;
+  id?: number;
   coverUrl: string;
   title: string;
-  position: number;
+  position?: number;
 }
