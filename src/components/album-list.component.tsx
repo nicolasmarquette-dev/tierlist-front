@@ -47,8 +47,10 @@ export const AlbumList = (): JSX.Element => {
     const newItems = Array.from(items);
     const [reorderedItem] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, reorderedItem);
-
-    setItems(newItems);
+    const positionUpdated = newItems.map((item, index) => {
+      return { ...item, position: index + 1 };
+    });
+    setItems(positionUpdated);
   };
 
   return (
