@@ -39,19 +39,42 @@ const list: AlbumInfos[] = [
 
 export const AlbumList = (): JSX.Element => {
   const [items, setItems] = useState<AlbumInfos[]>(list);
-  const [albumCreated, setAlbumCreated] = useState(false);
+  const [albumCreated, setAlbumCreated] = useState<AlbumInfos[]>([]);
+
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
     }
 
-    const newItems = Array.from(items);
-    const [reorderedItem] = newItems.splice(result.source.index, 1);
-    newItems.splice(result.destination.index, 0, reorderedItem);
-    const positionUpdated = newItems.map((item, index) => {
-      return { ...item, position: index + 1 };
-    });
-    setItems(positionUpdated);
+    if (
+      result.source.droppableId === "create" &&
+      result.destination.droppableId === "list"
+    ) {
+      const newItem = albumCreated[0];
+      const newItems = Array.from(items);
+      setAlbumCreated([]);
+      newItems.splice(result.destination.index, 0, {
+        ...newItem,
+        position: result.destination.index + 1,
+      });
+      const positionUpdated = newItems.map((item, index) => ({
+        ...item,
+        position: index + 1,
+      }));
+
+      setItems(positionUpdated);
+    } else if (
+      result.source.droppableId === "list" &&
+      result.destination.droppableId === "list"
+    ) {
+      const newItems = Array.from(items);
+      const [reorderedItem] = newItems.splice(result.source.index, 1);
+      newItems.splice(result.destination.index, 0, reorderedItem);
+      const positionUpdated = newItems.map((item, index) => {
+        return { ...item, position: index + 1 };
+      });
+      setItems(positionUpdated);
+    }
   };
 
   const updateItem = (itemUpdated: AlbumInfos): void => {
@@ -73,7 +96,7 @@ export const AlbumList = (): JSX.Element => {
                   key={"created"}
                   draggableId={`created`}
                   index={0}
-                  isDragDisabled={!albumCreated}
+                  isDragDisabled={!albumCreated.length}
                 >
                   {(provided) => (
                     <div
