@@ -56,7 +56,7 @@ export const AlbumList = (): JSX.Element => {
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <div className="bg-white p-8 rounded-lg ">
-        <h1 className="text-2xl font-bold mb-4">Exemple de Drag and Drop</h1>
+        <h1 className="text-2xl font-bold mb-4">TierList</h1>
         <DragDropContext onDragEnd={onDragEnd}>
           <StrictModeDroppable droppableId="list">
             {(provided) => (
@@ -73,7 +73,7 @@ export const AlbumList = (): JSX.Element => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <h1>{item.position}</h1>
+                        <h1>TOP {item.position}</h1>
                         <Album imageUrl={item.coverUrl} title={item.title} />
                       </div>
                     )}
