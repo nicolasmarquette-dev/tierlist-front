@@ -53,6 +53,13 @@ export const AlbumList = (): JSX.Element => {
     setItems(positionUpdated);
   };
 
+  const updateItem = (itemUpdated: AlbumInfos): void => {
+    const itemsCopy = [...items].map((item) =>
+      itemUpdated.id === item.id ? itemUpdated : item
+    );
+    setItems(itemsCopy);
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <div className="bg-white p-8 rounded-lg ">
@@ -74,7 +81,7 @@ export const AlbumList = (): JSX.Element => {
                         {...provided.dragHandleProps}
                       >
                         <h1>TOP {item.position}</h1>
-                        <Album imageUrl={item.coverUrl} title={item.title} />
+                        <Album albumInfos={item} updateItem={updateItem} />
                       </div>
                     )}
                   </Draggable>

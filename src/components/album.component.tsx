@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { TitleComponent } from "./title.component";
+import { AlbumInfos } from "../interfaces/album-infos.interface";
 
 interface AlbumCardProps {
-  imageUrl: string;
-  title: string;
+  albumInfos: AlbumInfos;
+  updateItem: (itemUpdated: AlbumInfos) => void;
 }
 
-export const Album = ({
-  imageUrl = "/placeholder.svg?height=300&width=300",
-  title = "Album Title",
-}: AlbumCardProps): JSX.Element => {
+export const Album = (props: AlbumCardProps): JSX.Element => {
   const [isHovered, setIsHovered] = useState(false);
+
+  const updateTitle = (newTitle: string) => {
+    const itemUpdated = { ...props.albumInfos };
+    itemUpdated.title = newTitle;
+    props.updateItem(itemUpdated);
+  };
 
   return (
     <motion.div
@@ -23,8 +28,8 @@ export const Album = ({
     >
       <div className="relative overflow-hidden">
         <motion.img
-          src={imageUrl}
-          alt={title}
+          src={props.albumInfos.coverUrl}
+          alt={props.albumInfos.title}
           className="w-full h-64 object-cover"
           animate={{ scale: isHovered ? 1.05 : 1 }}
           transition={{ duration: 0.3 }}
@@ -61,7 +66,11 @@ export const Album = ({
           animate={{ y: isHovered ? -5 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          {title}
+          <TitleComponent
+            id={props.albumInfos.id}
+            title={props.albumInfos.title}
+            setValue={updateTitle}
+          />
         </motion.h3>
       </div>
     </motion.div>
