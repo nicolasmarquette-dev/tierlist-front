@@ -68,13 +68,11 @@ export const Album = (props: AlbumCardProps): JSX.Element => {
           animate={{ y: isHovered ? -5 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          {props.updateItem && props.albumInfos.id && (
-            <TitleComponent
-              id={props.albumInfos.id}
-              title={props.albumInfos.title}
-              setValue={updateTitle}
-            />
-          )}
+          <TitleComponent
+            id={props.albumInfos.id}
+            title={props.albumInfos.title}
+            setValue={updateTitle}
+          />
         </motion.h3>
       </div>
     </motion.div>

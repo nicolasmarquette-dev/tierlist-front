@@ -4,6 +4,7 @@ import { Album } from "./album.component";
 import { useState } from "react";
 import { DragDropContext, Draggable, DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
+import { CreateAlbum } from "./create-album/create-album.component";
 
 const list: AlbumInfos[] = [
   {
@@ -38,7 +39,7 @@ const list: AlbumInfos[] = [
 
 export const AlbumList = (): JSX.Element => {
   const [items, setItems] = useState<AlbumInfos[]>(list);
-
+  const [albumCreated, setAlbumCreated] = useState(false);
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
@@ -65,6 +66,32 @@ export const AlbumList = (): JSX.Element => {
       <div className="bg-white p-8 rounded-lg ">
         <h1 className="text-2xl font-bold mb-4">TierList</h1>
         <DragDropContext onDragEnd={onDragEnd}>
+          <StrictModeDroppable droppableId="create">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                <Draggable
+                  key={"created"}
+                  draggableId={`created`}
+                  index={0}
+                  isDragDisabled={!albumCreated}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <CreateAlbum
+                        setAlbumCreated={setAlbumCreated}
+                        albumCreated={albumCreated}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+                {provided.placeholder}
+              </div>
+            )}
+          </StrictModeDroppable>
           <StrictModeDroppable droppableId="list">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>

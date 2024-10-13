@@ -2,11 +2,15 @@ import { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { Album } from "../album.component";
 
-export const CreateAlbum = () => {
+interface CreateAlbumProps {
+  setAlbumCreated: (created: boolean) => void;
+  albumCreated: boolean;
+}
+
+export const CreateAlbum = (props: CreateAlbumProps) => {
   const [title, setTitle] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [position, setPosition] = useState("");
-  const [albumCreated, setAlbumCreated] = useState(false);
 
   const albumIsValid = (): boolean => {
     return title.trim().length !== 0 && coverUrl.trim().length !== 0;
@@ -14,7 +18,7 @@ export const CreateAlbum = () => {
 
   return (
     <div className="flex flex-col space-y-3 max-w-md mx-auto bg-gray-100 p-5 rounded-lg">
-      {!albumCreated ? (
+      {!props.albumCreated ? (
         <>
           <TextField
             value={title}
@@ -48,7 +52,7 @@ export const CreateAlbum = () => {
           />
           <Button
             disabled={!albumIsValid()}
-            onClick={() => setAlbumCreated(true)}
+            onClick={() => props.setAlbumCreated(true)}
           >
             Créer l'album
           </Button>
