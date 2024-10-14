@@ -41,6 +41,17 @@ export const AlbumList = (): JSX.Element => {
   const [items, setItems] = useState<AlbumInfos[]>(list);
   const [albumCreated, setAlbumCreated] = useState<AlbumInfos[]>([]);
 
+  const getLists = async () => {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:8080/api/list/waaa", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    response.text().then((text) => console.log(text));
+  };
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
@@ -88,6 +99,7 @@ export const AlbumList = (): JSX.Element => {
     <div className="flex justify-center items-center min-h-screen ">
       <div className="bg-white p-8 rounded-lg ">
         <h1 className="text-2xl font-bold mb-4">TierList</h1>
+        <button onClick={getLists}>HELLOOOOO</button>
         <DragDropContext onDragEnd={onDragEnd}>
           <StrictModeDroppable droppableId="create">
             {(provided) => (
