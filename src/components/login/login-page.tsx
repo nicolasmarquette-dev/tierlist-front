@@ -54,7 +54,8 @@ export default function LoginPage() {
       setOpenError(true);
     } else {
       response.json().then((loginResponse) => {
-        localStorage.setItem("accessToken", loginResponse.accessToken);
+        localStorage.setItem("token", loginResponse.accessToken);
+        navigate("/tierlist");
       });
     }
   };
