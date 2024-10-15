@@ -6,52 +6,15 @@ import { DragDropContext, Draggable, DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
 import { CreateAlbum } from "./create-album/create-album.component";
 
-const list: AlbumInfos[] = [
-  {
-    id: 1,
-    coverUrl:
-      "https://cdns-images.dzcdn.net/images/cover/79ba3cd515942d1dc62f49f859a374fd/0x1900-000000-80-0-0.jpg",
-    title: "Ipseité - Damso",
-    position: 1,
-  },
-  {
-    id: 2,
-    coverUrl:
-      "https://davycroket.com/wp-content/uploads/nekfeu-cover-feu-album-.jpg",
-    title: "Feu - Nekfeu",
-    position: 2,
-  },
-  {
-    id: 3,
-    coverUrl:
-      "https://cdns-images.dzcdn.net/images/cover/d4fbedfce6a2f4b492878e8b3ba7c04d/500x500.jpg",
-    title: "Ocho - SDM",
-    position: 3,
-  },
-  {
-    id: 4,
-    coverUrl:
-      "https://www.radiofrance.fr/s3/cruiser-production/2020/11/4409d2c3-4f58-44de-ad64-b86d11c88b66/860_jul-cover-1.jpg",
-    title: "Loin du monde - JUL",
-    position: 4,
-  },
-];
+interface AlbumListProps {
+  items: AlbumInfos[];
+  setItems: (items: AlbumInfos[]) => void;
+}
 
-export const AlbumList = (): JSX.Element => {
-  const [items, setItems] = useState<AlbumInfos[]>(list);
+export const AlbumList = (props: AlbumListProps): JSX.Element => {
+  //const [items, setItems] = useState<AlbumInfos[]>(props.items);
   const [albumCreated, setAlbumCreated] = useState<AlbumInfos[]>([]);
 
-  const getLists = async () => {
-    const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:8080/v1/api/lists", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    response.text().then((text) => console.log(text));
-  };
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
@@ -62,7 +25,7 @@ export const AlbumList = (): JSX.Element => {
       result.destination.droppableId === "list"
     ) {
       const newItem = albumCreated[0];
-      const newItems = Array.from(items);
+      const newItems = Array.from(props.items);
       setAlbumCreated([]);
       newItems.splice(result.destination.index, 0, {
         ...newItem,
@@ -73,33 +36,32 @@ export const AlbumList = (): JSX.Element => {
         position: index + 1,
       }));
 
-      setItems(positionUpdated);
+      props.setItems(positionUpdated);
     } else if (
       result.source.droppableId === "list" &&
       result.destination.droppableId === "list"
     ) {
-      const newItems = Array.from(items);
+      const newItems = Array.from(props.items);
       const [reorderedItem] = newItems.splice(result.source.index, 1);
       newItems.splice(result.destination.index, 0, reorderedItem);
       const positionUpdated = newItems.map((item, index) => {
         return { ...item, position: index + 1 };
       });
-      setItems(positionUpdated);
+      props.setItems(positionUpdated);
     }
   };
 
   const updateItem = (itemUpdated: AlbumInfos): void => {
-    const itemsCopy = [...items].map((item) =>
+    const itemsCopy = [...props.items].map((item) =>
       itemUpdated.id === item.id ? itemUpdated : item
     );
-    setItems(itemsCopy);
+    props.setItems(itemsCopy);
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen ">
       <div className="bg-white p-8 rounded-lg ">
         <h1 className="text-2xl font-bold mb-4">TierList</h1>
-        <button onClick={getLists}>HELLOOOOO</button>
         <DragDropContext onDragEnd={onDragEnd}>
           <StrictModeDroppable droppableId="create">
             {(provided) => (
@@ -130,7 +92,7 @@ export const AlbumList = (): JSX.Element => {
           <StrictModeDroppable droppableId="list">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                {items.map((item, index) => (
+                {props.items.map((item, index) => (
                   <Draggable
                     key={item.id}
                     draggableId={`${item.id}`}

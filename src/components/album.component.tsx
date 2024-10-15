@@ -18,7 +18,6 @@ export const Album = (props: AlbumCardProps): JSX.Element => {
       props.updateItem(itemUpdated);
     }
   };
-
   return (
     <motion.div
       className="max-w-xs mx-auto bg-white rounded-lg overflow-hidden shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-2xl m-2"
@@ -30,7 +29,7 @@ export const Album = (props: AlbumCardProps): JSX.Element => {
     >
       <div className="relative overflow-hidden">
         <motion.img
-          src={props.albumInfos.coverUrl}
+          src={props.albumInfos.coverURL}
           alt={props.albumInfos.title}
           className="w-full h-64 object-cover"
           animate={{ scale: isHovered ? 1.05 : 1 }}

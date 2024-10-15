@@ -17,6 +17,7 @@ import {
   Paper,
 } from "@mui/material";
 import { AlbumList } from "../album-list.component";
+import { AlbumInfos } from "../../interfaces/album-infos.interface";
 
 const theme = createTheme({
   palette: {
@@ -58,22 +59,15 @@ const theme = createTheme({
   },
 });
 
-const items = [
-  { id: 1, name: "Dashboard" },
-  { id: 2, name: "Analytics" },
-  { id: 3, name: "Reports" },
-  { id: 4, name: "Settings" },
-];
-
 export default function UpdatedDashboardGradient() {
-  const [selectedItem, setSelectedItem] = useState<number>(items[0].id);
+  const [selectedItem, setSelectedItem] = useState<number>(0);
   const [lists, setLists] = useState<{ id: number; title: string }[]>([]);
-
+  const [items, setItems] = useState<AlbumInfos[]>([]);
   useEffect(() => {
     getLists().then(() => {
-      setSelectedItem(lists[0].id);
+      getAlbumsFromList(selectedItem);
     });
-  }, []);
+  }, [selectedItem]);
 
   const getLists = async () => {
     const token = localStorage.getItem("token");
@@ -84,7 +78,27 @@ export default function UpdatedDashboardGradient() {
         Authorization: `Bearer ${token}`,
       },
     });
-    response.json().then((json) => setLists(json));
+    response.json().then((json) => {
+      setLists(json);
+      setSelectedItem(json[0].id);
+    });
+  };
+
+  const getAlbumsFromList = async (listId: number) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(
+      `http://localhost:8080/v1/api/items/${listId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    response.json().then((json) => {
+      setItems(json);
+    });
   };
 
   const handleChange = (event: SelectChangeEvent<number>) => {
@@ -144,7 +158,12 @@ export default function UpdatedDashboardGradient() {
               {lists
                 ?.find((item) => item.id === selectedItem)
                 ?.title.toLowerCase()}{" "}
-              <AlbumList />
+              {items.length > 0 && (
+                <AlbumList
+                  items={items.sort((item) => item.id)}
+                  setItems={setItems}
+                />
+              )}
             </Typography>
           </Paper>
         </Container>
