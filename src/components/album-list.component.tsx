@@ -43,7 +43,7 @@ export const AlbumList = (): JSX.Element => {
 
   const getLists = async () => {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:8080/api/list/waaa", {
+    const response = await fetch("http://localhost:8080/v1/api/lists", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -4,7 +4,7 @@ import "./assets/cover.jpg";
 import LoginPage from "./components/login/login-page";
 import RegisterPage from "./components/register/register-page";
 import PrivateRoute from "./components/private-route/private-route";
-import { AlbumList } from "./components/album-list.component";
+import Dashboard from "./components/dashboard/dashboard";
 //import { AlbumList } from "./components/album-list.component";
 //import LoginPage from "./components/login/login-page";
 
@@ -19,7 +19,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route
               path="/tierlist"
-              element={<PrivateRoute component={AlbumList} />}
+              element={<PrivateRoute component={Dashboard} />}
             />
           </Routes>
         </BrowserRouter>
