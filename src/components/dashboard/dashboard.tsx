@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { AlbumList } from "../album-list.component";
 import { AlbumInfos } from "../../interfaces/album-infos.interface";
+import { ListInfos } from "../../interfaces/list-infos.interface";
 
 const theme = createTheme({
   palette: {
@@ -59,15 +60,15 @@ const theme = createTheme({
   },
 });
 
-export default function UpdatedDashboardGradient() {
-  const [selectedItem, setSelectedItem] = useState<number>(0);
-  const [lists, setLists] = useState<{ id: number; title: string }[]>([]);
+export default function Dashboard() {
+  const [selectedList, setSelectedList] = useState<number>(0);
+  const [lists, setLists] = useState<ListInfos[]>([]);
   const [items, setItems] = useState<AlbumInfos[]>([]);
   useEffect(() => {
     getLists().then(() => {
-      getAlbumsFromList(selectedItem);
+      setItems(lists[0].items);
     });
-  }, [selectedItem]);
+  }, []);
 
   const getLists = async () => {
     const token = localStorage.getItem("token");
@@ -78,31 +79,38 @@ export default function UpdatedDashboardGradient() {
         Authorization: `Bearer ${token}`,
       },
     });
-    response.json().then((json) => {
-      setLists(json);
-      setSelectedItem(json[0].id);
+    response.json().then((listsResponse) => {
+      listsResponse.sort((a: ListInfos, b: ListInfos) => a.id - b.id);
+      setLists(listsResponse);
+      setSelectedList(listsResponse[0].id);
+      const itemsSorted = listsResponse[0].items.sort(
+        (a: AlbumInfos, b: AlbumInfos) => a.position - b.position
+      );
+      setItems(itemsSorted);
     });
   };
 
-  const getAlbumsFromList = async (listId: number) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(
-      `http://localhost:8080/v1/api/items/${listId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    response.json().then((json) => {
-      setItems(json);
-    });
-  };
+  // const getAlbumsFromList = async (listId: number) => {
+  //   const token = localStorage.getItem("token");
+  //   const response = await fetch(
+  //     `http://localhost:8080/v1/api/items/${listId}`,
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     }
+  //   );
+  //   response.json().then((json) => {
+  //     json.sort((a: AlbumInfos, b: AlbumInfos) => a.position - b.position);
+  //     setItems(json);
+  //   });
+  // };
 
   const handleChange = (event: SelectChangeEvent<number>) => {
-    setSelectedItem(event.target.value as number);
+    setSelectedList(event.target.value as number);
+    setItems(lists.find((list) => list.id === event.target.value)?.items ?? []);
   };
 
   return (
@@ -134,7 +142,7 @@ export default function UpdatedDashboardGradient() {
               <Select
                 labelId="item-select-label"
                 id="item-select"
-                value={selectedItem}
+                value={selectedList}
                 label="Select Item"
                 onChange={handleChange}
                 size="small"
@@ -151,18 +159,11 @@ export default function UpdatedDashboardGradient() {
         <Container maxWidth="md" sx={{ mt: 4 }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>
-              {lists?.find((item) => item.id === selectedItem)?.title}
+              {lists?.find((item) => item.id === selectedList)?.title}
             </Typography>
             <Typography variant="body1">
-              This is the content area for the{" "}
-              {lists
-                ?.find((item) => item.id === selectedItem)
-                ?.title.toLowerCase()}{" "}
               {items.length > 0 && (
-                <AlbumList
-                  items={items.sort((item) => item.id)}
-                  setItems={setItems}
-                />
+                <AlbumList items={items} setItems={setItems} />
               )}
             </Typography>
           </Paper>

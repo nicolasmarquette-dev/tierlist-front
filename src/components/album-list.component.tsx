@@ -12,7 +12,6 @@ interface AlbumListProps {
 }
 
 export const AlbumList = (props: AlbumListProps): JSX.Element => {
-  //const [items, setItems] = useState<AlbumInfos[]>(props.items);
   const [albumCreated, setAlbumCreated] = useState<AlbumInfos[]>([]);
 
   const onDragEnd = (result: DropResult) => {
