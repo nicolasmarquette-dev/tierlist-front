@@ -9,6 +9,7 @@ import { CreateAlbum } from "./create-album/create-album.component";
 interface AlbumListProps {
   items: AlbumInfos[];
   setItems: (items: AlbumInfos[]) => void;
+  listId: number;
 }
 
 export const AlbumList = (props: AlbumListProps): JSX.Element => {
@@ -77,10 +78,14 @@ export const AlbumList = (props: AlbumListProps): JSX.Element => {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <CreateAlbum
-                        setAlbumCreated={setAlbumCreated}
-                        albumCreated={albumCreated}
-                      />
+                      {props.items && (
+                        <CreateAlbum
+                          setAlbumCreated={setAlbumCreated}
+                          albumCreated={albumCreated}
+                          listId={props.listId}
+                          items={props.items}
+                        />
+                      )}
                     </div>
                   )}
                 </Draggable>

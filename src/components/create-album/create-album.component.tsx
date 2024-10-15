@@ -6,23 +6,54 @@ import { AlbumInfos } from "../../interfaces/album-infos.interface";
 interface CreateAlbumProps {
   setAlbumCreated: (created: AlbumInfos[]) => void;
   albumCreated: AlbumInfos[];
+  listId: number;
+  items: AlbumInfos[];
 }
 
 export const CreateAlbum = (props: CreateAlbumProps) => {
   const [title, setTitle] = useState("");
-  const [coverUrl, setCoverUrl] = useState("");
-  const [position, setPosition] = useState("");
+  const [coverURL, setCoverUrl] = useState("");
+  const [position, setPosition] = useState(-1);
 
   useEffect(() => {
     if (props.albumCreated.length === 0) {
       setTitle("");
       setCoverUrl("");
-      setPosition("");
+      setPosition(props.items?.length + 1);
     }
   }, [props.albumCreated]);
 
   const albumIsValid = (): boolean => {
-    return title.trim().length !== 0 && coverUrl.trim().length !== 0;
+    return title.trim().length !== 0 && coverURL.trim().length !== 0;
+  };
+
+  const handleAlbumCreation = async () => {
+    const token = localStorage.getItem("token");
+    const album = {
+      title,
+      coverURL,
+      position,
+    };
+
+    const response = await fetch(
+      `http://localhost:8080/v1/api/lists/${props.listId}/item`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(album),
+      }
+    );
+
+    props.setAlbumCreated([
+      {
+        coverURL,
+        title,
+        position,
+      },
+    ]);
   };
 
   return (
@@ -40,7 +71,7 @@ export const CreateAlbum = (props: CreateAlbumProps) => {
             className="w-full"
           />
           <TextField
-            value={coverUrl}
+            value={coverURL}
             label="URL de l'image"
             onChange={(
               e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -54,23 +85,14 @@ export const CreateAlbum = (props: CreateAlbumProps) => {
             label="Position par défaut"
             onChange={(
               e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-            ) => setPosition(e.target.value)}
+            ) => setPosition(e.target.value as unknown as number)}
             variant="outlined"
             size="small"
             className="w-full"
           />
           <Button
             disabled={!albumIsValid()}
-            onClick={() =>
-              props.setAlbumCreated([
-                {
-                  id: 5,
-                  coverUrl,
-                  title,
-                  position: 5,
-                },
-              ])
-            }
+            onClick={() => handleAlbumCreation()}
           >
             Créer l'album
           </Button>
@@ -78,8 +100,9 @@ export const CreateAlbum = (props: CreateAlbumProps) => {
       ) : (
         <Album
           albumInfos={{
-            coverUrl,
+            coverURL,
             title,
+            position,
           }}
         />
       )}

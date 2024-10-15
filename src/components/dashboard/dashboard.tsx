@@ -145,7 +145,11 @@ export default function Dashboard() {
             </Typography>
             <Typography variant="body1">
               {items.length > 0 && (
-                <AlbumList items={items} setItems={setItems} />
+                <AlbumList
+                  items={items}
+                  setItems={setItems}
+                  listId={selectedList}
+                />
               )}
             </Typography>
           </Paper>
