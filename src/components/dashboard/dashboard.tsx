@@ -90,24 +90,6 @@ export default function Dashboard() {
     });
   };
 
-  // const getAlbumsFromList = async (listId: number) => {
-  //   const token = localStorage.getItem("token");
-  //   const response = await fetch(
-  //     `http://localhost:8080/v1/api/items/${listId}`,
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     }
-  //   );
-  //   response.json().then((json) => {
-  //     json.sort((a: AlbumInfos, b: AlbumInfos) => a.position - b.position);
-  //     setItems(json);
-  //   });
-  // };
-
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedList(event.target.value as number);
     setItems(lists.find((list) => list.id === event.target.value)?.items ?? []);
